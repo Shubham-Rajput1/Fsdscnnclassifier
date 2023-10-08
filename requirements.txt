@@ -5,6 +5,7 @@ notebook
 numpy
 matplotlib
 seaborn
+mymodule
 python-box==6.0.2
 pyYAML
 tqdm
