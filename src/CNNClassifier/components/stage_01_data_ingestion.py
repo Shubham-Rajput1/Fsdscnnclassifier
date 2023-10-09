@@ -12,13 +12,29 @@ class DataIngestion:
         pass
 
     def download_file(self):
-        pass
+        if not os.path.exists(self.config.local_data_file):
+            logger.info("trying to download file")
+            request.urlretrieve(
+                url=self.config.Source_URL,
+                filename=self.config.local_data_file
+            )
             
-    def _get_updated_list_of_files(self):
-        pass
+        else:
+            logger.info("file already exists")    
+            
+    def _get_updated_list_of_files(self,list_of_files):
+        return [f for f in list_of_files if f.endswith("jpg")]
+        
     
-    def _preprocess(self):
-        pass
+    def _preprocess(self,zf,f,working_dir):
+        target_filepath=os.path.join(working_dir,f)
+        if not os.path.exists(target_filepath):
+            zf.extract(f,working_dir)
 
     def unzip_and_clean(self):
-        pass
+        with ZipFile(file=self.config.local_data_file,mode="r") as zf:
+            list_of_files = zf.namelist()
+            updated_list_of_files=self._get_updated_list_of_files(list_of_files)
+            for f in tqdm(updated_list_of_files):
+                self._preprocess()
+                
